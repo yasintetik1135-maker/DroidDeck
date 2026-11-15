@@ -1965,7 +1965,7 @@ case $mode in
       PATH="$bl_steam_path" \
       BL_STEAM_WEBHELPER="$steam_root/steamrtarm64/steamwebhelper" \
       "${steam_client[@]}" "${_bl_ui[@]}" "${_bl_cdp[@]}" "${_bl_lang[@]}" -clientbeta "$steam_channel" \
-        -no-cef-sandbox -cef-ozone-platform=x11 "${_bl_cef[@]}" "$@"
+        -no-cef-sandbox -cef-ozone-platform=x11 "${_bl_cef[@]}" -cef-renderer-process-limit=2 -cef-disable-dev-shm-usage -cef-disable-gpu-vsync "$@"
       rc=$?
       steam_ran=$((SECONDS - steam_started))
       if [ -n "$desktop_ui_pid" ]; then

@@ -36,9 +36,15 @@ object Lossless {
         return State(owned(context), cacheFile(context)?.isFile == true, source)
     }
 
+    private fun downloadDll(): File? = listOf(
+        File("/storage/emulated/0/Download/Lossless.dll"),
+        File("/sdcard/Download/Lossless.dll"),
+        File(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS), "Lossless.dll"),
+    ).firstOrNull { it.isFile && it.canRead() }
+
     fun owned(context: Context): Boolean {
         if (prefs(context).getBoolean(KEY_OWNED, false)) return true
-        if (!ownedFlag(context).exists()) return false
+        if (!ownedFlag(context).exists() && downloadDll() == null) return false
         markOwned(context)
         return true
     }
@@ -152,6 +158,7 @@ object Lossless {
     }
 
     private fun steamDll(context: Context): File? {
+        downloadDll()?.let { return it }
         val libraries = listOfNotNull(
             File(LinuxRuntime.rootDir(context), "root/.local/share/Steam"),
             File(LinuxRuntime.rootDir(context), "root/.droiddeck-x64/.local/share/Steam"),
